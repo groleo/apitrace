@@ -178,17 +178,18 @@ if (ENABLE_EGL AND X11_FOUND AND NOT WIN32 AND NOT APPLE AND NOT ENABLE_WAFFLE)
 endif ()
 
 if (ENABLE_EGL AND ENABLE_WAFFLE)
+    link_directories(${Waffle_LIBRARY_DIRS})
     add_executable (eglretrace
         glws_waffle.cpp
     )
-
-    add_dependencies (eglretrace glproc)
+    add_dependencies (eglretrace glproc_egl)
     include_directories (${Waffle_INCLUDE_DIRS})
 
     target_link_libraries (eglretrace
         retrace_common
         glretrace_common
         glhelpers
+        glproc
         glproc_egl
         ${Waffle_LIBRARIES}
         ${X11_X11_LIB}

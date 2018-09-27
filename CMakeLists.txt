@@ -384,6 +384,10 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     add_definitions (-D_GNU_SOURCE)
 endif ()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+  add_definitions (-D_QNX_SOURCE)
+endif ()
+
 include (TestBigEndian)
 test_big_endian (HAVE_BIGENDIAN)
 if (HAVE_BIGENDIAN)
@@ -479,7 +483,7 @@ add_subdirectory (thirdparty/brotli)
 if (NOT WIN32 AND NOT ENABLE_STATIC_EXE)
     # zlib 1.2.4-1.2.5 made it impossible to read the last block of incomplete
     # gzip traces (e.g., apitrace-tests/traces/zlib-no-eof.trace).
-    find_package (ZLIB 1.2.6)
+    find_package (ZLIB)
 endif ()
 if (NOT ZLIB_FOUND)
     message (STATUS "Using bundled ZLIB")

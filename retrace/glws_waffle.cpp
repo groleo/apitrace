@@ -130,6 +130,8 @@ init(void)
     waffle_platform = WAFFLE_PLATFORM_CGL
 #elif defined(_WIN32)
     waffle_platform = WAFFLE_PLATFORM_WGL
+#elif defined(_QNX_SOURCE)
+    waffle_platform = WAFFLE_PLATFORM_QNX;
 #else
     waffle_platform = WAFFLE_PLATFORM_GLX;
 
@@ -154,11 +156,31 @@ init(void)
     waffle_init_attrib_list.add(WAFFLE_PLATFORM, waffle_platform);
     waffle_init_attrib_list.end(WAFFLE_NONE);
 
-    waffle_init(waffle_init_attrib_list);
+    bool rv = waffle_init(waffle_init_attrib_list);
+    if (!rv) {
+        std::cerr << "error: waffle_init failed\n";
+        const struct waffle_error_info *info = waffle_error_get_info();
+        const char *code = waffle_error_to_string(info->code);
+
+        if (info->message_length > 0)
+            std::cerr << code << ":" << info->message << "\n";
+        else
+            std::cerr << code << "\n";
+
+        exit(1);
+    }
 
     dpy = waffle_display_connect(NULL);
     if (!dpy) {
         std::cerr << "error: waffle_display_connect failed\n";
+        const struct waffle_error_info *info = waffle_error_get_info();
+        const char *code = waffle_error_to_string(info->code);
+
+        if (info->message_length > 0)
+            std::cerr << code << ":" << info->message << "\n";
+        else
+            std::cerr << code << "\n";
+
         exit(1);
     }
 }

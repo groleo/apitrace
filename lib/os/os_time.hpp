@@ -37,6 +37,9 @@
 #    include <time.h>
 #  elif defined(__APPLE__)
 #    include <mach/mach_time.h>
+#  elif defined(_QNX_SOURCE)
+#    include <sys/neutrino.h>
+#    include <sys/syspage.h>
 #  else
 #    include <sys/time.h>
 #  endif
@@ -53,6 +56,10 @@ namespace os {
 #elif defined(__linux__)
     // nanoseconds on Linux
     static const long long timeFrequency = 1000000000LL;
+#elif defined(_QNX_SOURCE)
+    // nanoseconds
+    static const long long timeFrequency = 1000000000LL;
+    static long long cyclesPerSec = SYSPAGE_ENTRY(qtime)->cycles_per_sec;
 #else
     // microseconds on Unices
     static const long long timeFrequency = 1000000LL;
@@ -83,6 +90,8 @@ namespace os {
             timeFrequency = 1000000000LL * timebaseInfo.denom / timebaseInfo.numer;
         }
         return mach_absolute_time();
+#elif defined(_QNX_SOURCE)
+        return (ClockCycles()*1000000000LL)/cyclesPerSec;
 #else
         struct timeval tv;
         gettimeofday(&tv, NULL);

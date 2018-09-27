@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.  */
 #include "internal.h"
 
 #ifndef HAVE_GETEXECNAME
-#define getexecname() NULL
+#define getexecname() "eglretrace"
 #endif
 
 /* Initialize the fileline information from the executable.  Returns 1
